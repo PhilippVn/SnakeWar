@@ -8,6 +8,19 @@ class Snake{
         this.segments = new Array(new SnakeSegment(x,y,true));
     }
 
+    detectCollision(){
+        if(this.segments.length == 1){
+            return false;
+        }
+        let head = this.segments[this.segments.length - 1];
+        for(i = 0; i < this.segments.length - 1;++i){
+            if(this.segments[i].getX == head.getX && this.segments[i].getY == head.getY){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     move(x,y,appleEaten){
         if(this.segments.length < 1){
@@ -37,6 +50,10 @@ class Snake{
 
     get getLength(){
         return this.length;
+    }
+
+    get getSegments(){
+        return this.segments;
     }
 
     draw(){

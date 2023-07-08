@@ -13,6 +13,9 @@ window.onload  = () => {
 
     snake = new Snake(x,y);
 
+    appleL = spawnApple(snake.getSegments);
+    apple = new Apple(appleL[0],appleL[1]);
+
     last = performance.now();
 
     window.requestAnimationFrame(gameLoop);
@@ -38,9 +41,10 @@ let y;
 let last;
 
 let snake;
+let apple;
 
 const DEFAULT_GAME_SPEED = 500;
-let gameSpeedMultiplier = 2;
+let gameSpeedMultiplier = 2.5;
 
 function gameLoop(timeStamp){
     secondsPassed = (timeStamp - oldTimeStamp) / 1000;
@@ -58,12 +62,32 @@ function gameLoop(timeStamp){
         handleUserInput();
 
         // update
+        
+        let appleEaten = apple.detectCollision(x,y);
+
+        if(appleEaten){
+            appleL = spawnApple(snake.getSegments);
+            apple = new Apple(appleL[0],appleL[1]);
+        }
+
+        let gameOver = snake.detectCollision();
+        snake.move(x,y,appleEaten);
+
+        if(gameOver){
+            ctx.strokeStyle = "red";
+            ctx.font = 'italic 125pt Calibri';
+            ctx.fillText("GAME OVER",25,125);
+            return;
+        }
 
         // paint
+
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        drawGrid(25,25,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
-        snake.move(x,y,true);
+        //drawGrid(25,25,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
+
         snake.draw();
+
+        apple.draw();
 
         //snake.printSnake();
 
