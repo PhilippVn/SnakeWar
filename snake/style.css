@@ -1,0 +1,17 @@
+#canvas {
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    outline: 10px ridge black;
+}
+
+#score{
+    margin: 0;
+    padding: 0;
+    width: fit-content;
+    height: fit-content;
+    font: 1.2em "Fira Sans";
+    outline: 2px dotted black;
+    background-color: aqua;
+    opacity: 1;
+}
