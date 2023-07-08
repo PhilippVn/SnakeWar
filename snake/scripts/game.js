@@ -2,19 +2,23 @@ window.onload  = () => {
 
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext("2d");
+
+    score = document.getElementById("scorep");
     ctx.lineWidth = 5;
     ctx.strokeStyle = "black";
-    ctx.fillStyle = "green";
     ctx.font = 'italic 12pt Calibri';
 
     x = canvas.getBoundingClientRect().width/2 - 25;
     y = canvas.getBoundingClientRect().height/2 - 25;
 
-    ctx.fillRect(x,y,25,25);
+    snake = new Snake(x,y);
+
     last = performance.now();
 
     window.requestAnimationFrame(gameLoop);
 }
+
+let score;
 
 let secondsPassed;
 let oldTimeStamp;
@@ -33,6 +37,11 @@ let y;
 
 let last;
 
+let snake;
+
+const DEFAULT_GAME_SPEED = 500;
+let gameSpeedMultiplier = 2;
+
 function gameLoop(timeStamp){
     secondsPassed = (timeStamp - oldTimeStamp) / 1000;
     oldTimeStamp = timeStamp;
@@ -41,7 +50,7 @@ function gameLoop(timeStamp){
     document.getElementById("frametime").innerText = "Frametime: " + Math.round((secondsPassed + Number.EPSILON) * 100) / 100;
 
 
-    if((timeStamp - last) > 500){
+    if((timeStamp - last) > (DEFAULT_GAME_SPEED/gameSpeedMultiplier)){
 
 
 
@@ -53,7 +62,12 @@ function gameLoop(timeStamp){
         // paint
         ctx.clearRect(0,0,canvas.width,canvas.height);
         drawGrid(25,25,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
-        ctx.fillRect(x,y,25,25);
+        snake.move(x,y,true);
+        snake.draw();
+
+        //snake.printSnake();
+
+        score.innerText = `Score: ${snake.getLength}`;
         
         ctx.fillStyle = "black";
         ctx.fillText('X:' + x,10,20);
@@ -73,7 +87,7 @@ function handleUserInput(){
         case 'd' || 'D' || "ArrowRight": x += stepSize;break;
         case 's' || 'S' || "ArrowDown": y += stepSize;break;
         case 'a' || 'A' || "ArrowLeft": x -= stepSize;break;
-        default: console.error(`Unkown key: ${key}`);
+        default: break;//console.error(`Unkown key: ${key}`);
     }
 
     if(y < 0) {
