@@ -4,6 +4,7 @@ window.onload  = () => {
     ctx = canvas.getContext("2d");
 
     score = document.getElementById("scorep");
+
     ctx.lineWidth = 5;
     ctx.strokeStyle = "black";
     ctx.font = 'italic 12pt Calibri';
@@ -44,7 +45,7 @@ let snake;
 let apple;
 
 const DEFAULT_GAME_SPEED = 500;
-let gameSpeedMultiplier = 3;
+let gameSpeedMultiplier;
 
 function gameLoop(timeStamp){
     secondsPassed = (timeStamp - oldTimeStamp) / 1000;
@@ -52,6 +53,8 @@ function gameLoop(timeStamp){
     fps = Math.round(1 / secondsPassed);
     document.getElementById("fps").innerText = "FPS: " + fps;
     document.getElementById("frametime").innerText = "Frametime: " + Math.round((secondsPassed + Number.EPSILON) * 100) / 100;
+
+    gameSpeedMultiplier = speedvalue.textContent;
 
 
     if((timeStamp - last) > (DEFAULT_GAME_SPEED/gameSpeedMultiplier)){
