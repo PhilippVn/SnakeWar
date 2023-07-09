@@ -1,0 +1,37 @@
+#canvas {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    outline: 10px ridge black;
+  }
+  
+  #gameboard {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+  }
+  
+  #score {
+    margin: 0;
+    padding: 0;
+    width: fit-content;
+    height: fit-content;
+    font: 1.2em "Fira Sans";
+    outline: 2px dotted black;
+    background-color: aqua;
+    opacity: 1;
+  }
+  
+  #gamestats {
+    margin-top: 10px; /* Adjust the value as needed */
+  }
+  
+  .sliders {
+    align-self: flex-end;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 10px; /* Adjust the value as needed */
+  }
