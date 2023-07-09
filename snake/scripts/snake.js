@@ -8,13 +8,12 @@ class Snake{
         this.segments = new Array(new SnakeSegment(x,y,true));
     }
 
-    detectCollision(){
+    detectCollision(x,y){
         if(this.segments.length == 1){
             return false;
         }
-        let head = this.segments[this.segments.length - 1];
         for(i = 0; i < this.segments.length - 1;++i){
-            if(this.segments[i].getX == head.getX && this.segments[i].getY == head.getY){
+            if(this.segments[i].getX == x && this.segments[i].getY == y){
                 return true;
             }
         }
@@ -22,30 +21,26 @@ class Snake{
     }
 
 
-    move(x,y,appleEaten){
-        if(this.segments.length < 1){
-            alert(`Invalid Snake Size!`);
+    move(x, y, appleEaten) {
+
+        let collision = this.detectCollision(x,y);
+
+        const removed = this.segments.shift();
+        this.length = this.segments.length;
+
+        const newHead = new SnakeSegment(x,y,true);
+        if(this.length >= 1)
+            this.segments[this.length-1].setIsHead = false;
+        this.segments.push(newHead);
+        this.length = this.segments.length;
+
+        if(appleEaten){
+            removed.setIsHead = false;
+            this.segments.unshift(removed);
+            this.length = this.segments.length;
         }
 
-        if(x == this.segments[0].getX && y == this.segments[0].getY){
-            return;
-        }
-
-        if(this.segments.length == 1){
-            if(!appleEaten){
-                this.segments[0].setX = x;
-                this.segments[0].setY = y;
-            }else{
-                this.segments[this.segments.length - 1].setIsHead =false;
-                this.length = this.segments.push(new SnakeSegment(x,y,true));
-            }
-        }else{
-            if(!appleEaten){
-                this.segments.shift();
-            }
-            this.segments[this.segments.length - 1].setIsHead =false;
-            this.length = this.segments.push(new SnakeSegment(x,y,true));
-        }
+        return collision;
     }
 
     get getLength(){
@@ -116,6 +111,6 @@ class SnakeSegment{
         }else{
             ctx.fillStyle = "greenyellow"
         }
-        ctx.fillRect(this.x,this.y,25,25);
+        ctx.fillRect(this.x,this.y,20,20); // 24 so there is a little gap :)
     }
 }

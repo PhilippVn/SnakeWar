@@ -44,7 +44,7 @@ let snake;
 let apple;
 
 const DEFAULT_GAME_SPEED = 500;
-let gameSpeedMultiplier = 2.5;
+let gameSpeedMultiplier = 3;
 
 function gameLoop(timeStamp){
     secondsPassed = (timeStamp - oldTimeStamp) / 1000;
@@ -63,22 +63,20 @@ function gameLoop(timeStamp){
 
         // update
         
+        
         let appleEaten = apple.detectCollision(x,y);
+
+        let gameOver = snake.move(x,y,appleEaten);
 
         if(appleEaten){
             appleL = spawnApple(snake.getSegments);
             apple = new Apple(appleL[0],appleL[1]);
         }
 
-        let gameOver = snake.detectCollision();
-        snake.move(x,y,appleEaten);
+        
+        
 
-        if(gameOver){
-            ctx.strokeStyle = "red";
-            ctx.font = 'italic 125pt Calibri';
-            ctx.fillText("GAME OVER",25,125);
-            return;
-        }
+
 
         // paint
 
@@ -88,6 +86,13 @@ function gameLoop(timeStamp){
         snake.draw();
 
         apple.draw();
+
+        if(gameOver){
+            ctx.fillStyle = "red";
+            ctx.font = 'italic 125pt Calibri';
+            ctx.fillText("GAME OVER",25,125);
+            return;
+        }
 
         //snake.printSnake();
 
@@ -157,7 +162,7 @@ document.addEventListener('keydown', (event) => {
     var name = event.key;
     var code = event.code;
     // Alert the key name and key code on keydown+
-    console.log(name)
+    //console.log(name)
     if(name == 'w' || name == 'W' || 'ArrowUp' || name == 'd' || name == 'D' || 'ArrowRight' || name == 's' || name == 'S' || 'ArrowDown' || name == 'a' || name == 'A' || 'ArrowLeft'){
         if(!keyPressed){
             keyPressed = true;
