@@ -18,6 +18,3 @@ if %errorlevel% equ 0 (
     echo Deleting existing Docker image: %IMAGE_NAME%...
     docker rmi %IMAGE_NAME%
 )
-
-echo Building Docker image...
-docker build -t %IMAGE_NAME% .
