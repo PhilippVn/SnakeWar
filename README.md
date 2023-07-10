@@ -15,3 +15,4 @@ Multiplayer snake game
 - build docker image manually or use `build.bat`
 - run container manually or with `start.bat`
 - copy the Server-Url into your browser and enjoy some SNAKE :)
+- to stop the web server either kill the container with `docker kill` or press `ctr + c`
