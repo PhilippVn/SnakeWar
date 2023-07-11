@@ -35,22 +35,11 @@ JSON
 }
 ```
 
-### Room join
-```json
-{
-    "message-code" : "room-join",
-    "client-name" : "<name>",
-    "room-id" : <room-id>,
-    "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
-}
-```
-
 ### Input
 ```json
 {
     "message-code" : "client-input",
     "client-name" : "<name>",
-    "room-id" : <room-id>,
     "input" : <Ascii Key Code>,
     "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
@@ -61,7 +50,6 @@ JSON
 {
     "message-code" : "game-stop",
     "client-name" : "<name>",
-    "room-id" : <room-id>,
     "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
 ```
