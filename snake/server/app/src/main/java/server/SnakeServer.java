@@ -3,12 +3,14 @@ package server;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
-
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
@@ -18,7 +20,9 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
 public class SnakeServer{
 
     private Session s; // session used for responding without a request
-    private static final ConcurrentHashMap<String,Pair<String,Integer>> players = new ConcurrentHashMap<>();
+    private static final java.util.concurrent.CopyOnWriteArrayList<String> users = new CopyOnWriteArrayList<>();
+    private static final ConcurrentHashMap<String,Pair<String,Integer>> players = new ConcurrentHashMap<>(); // map of all playing users
+    public static final int PORT = 51036;
 
     @OnOpen
     public void onOpen(Session session,
@@ -33,9 +37,9 @@ public class SnakeServer{
     @OnMessage
     public void onMessage(Session session,  String msg) throws IOException {
         // Handle new messages
-        System.out.println("Recieved Message: " + msg + " from");
+        System.out.println("Recieved Message: " + msg);
         try {
-            session.getBasicRemote().sendText("Server response:" + msg);
+            session.getBasicRemote().sendText("Server response to:" + msg +  "\n>>> Hello from Server!");
          } catch (IOException e) { 
             throw new RuntimeException(e);
          }
@@ -57,23 +61,23 @@ public class SnakeServer{
     }
 
     public static void main(String[] args) throws Exception{
-        Server server = new Server(0); // Set the desired port for Jetty
+        Server server = new Server(PORT);
 
-        ServletContextHandler contextHandler = new ServletContextHandler();
-        contextHandler.setContextPath("/");
-        server.setHandler(contextHandler);
+        // Create a ServletContextHandler with the given context path.
+        ServletContextHandler handler = new ServletContextHandler(server, "/");
+        server.setHandler(handler);
 
-        WebSocketServerContainerInitializer.configure(contextHandler, (servletContext, wsContainer) -> {
+        // Add Entpoints
+        WebSocketServerContainerInitializer.configure(handler, (servletContext, wsContainer) -> {
             wsContainer.addEndpoint(SnakeServer.class);
         });
 
+        // start server
         server.start();
 
-        int port = server.getURI().getPort();
+        // print websocket adress
         String ipAddress = InetAddress.getLocalHost().getHostAddress();
-        String address = "ws://" + ipAddress + ":" + port + "/snake";
-        System.out.println("WebSocket address: " + address);
-
-        server.join();
+        String address = "ws://" + ipAddress + ":" + PORT + "/snake";
+        System.out.println("WebSocket address:" + address);
     }
 }
