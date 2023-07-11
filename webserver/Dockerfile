@@ -14,7 +14,6 @@ RUN mkdir serve && cp -r SnakeWar/snake/client serve
 
 
 # Copy the webserver.py file to the container
-#COPY webserver.py /app/
 RUN mv SnakeWar/webserver/webserver.py .
 
 RUN rm -r SnakeWar
