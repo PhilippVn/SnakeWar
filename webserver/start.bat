@@ -33,5 +33,5 @@ echo Server-URL: http://%NetworkIP%:%PORT%
 
 REM Start the container
 echo Docker Container is running...
-docker run -it --name %CONTAINER_NAME% -p 8000:8000 %IMAGE_NAME%
+docker run -it --name %CONTAINER_NAME% -p %PORT%:%PORT% %IMAGE_NAME%
 
