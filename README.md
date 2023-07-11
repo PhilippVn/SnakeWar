@@ -1,6 +1,11 @@
 # SnakeWar
 Multiplayer snake game
 
+# Requirements
+- Docker
+- Java 17
+
+
 # Features
 - Snake Game
 - Webserver
@@ -14,5 +19,6 @@ Multiplayer snake game
 - go into `webserver`
 - build docker image manually or use `build.bat`
 - run container manually or with `start.bat`
+- start the game server by building it with `./gradlew build` and run using `./gradlew run`
 - copy the Server-Url into your browser and enjoy some SNAKE :)
 - to stop the web server either kill the container with `docker kill` or press `ctr + c`
