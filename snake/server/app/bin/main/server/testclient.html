@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client</title>
+</head>
+
+<body>
+    <button onclick="connectToServer()">Connect to Server</button>
+    <p id="output"></p>
+
+    <script>
+        function connectToServer() {
+            const socket = new WebSocket('ws://192.168.178.183:55725/snake');
+
+            socket.onopen = function(event) {
+                console.log('WebSocket connection opened');
+
+                // Send a message to the server
+                socket.send('Hello from client!');
+            };
+
+            socket.onmessage = function(event) {
+                console.log('Received message from server:', event.data);
+                document.getElementById('output').textContent = event.data;
+            };
+
+            socket.onclose = function(event) {
+                console.log('WebSocket connection closed');
+            };
+
+            socket.onerror = function(event) {
+                console.error('WebSocket error:', event);
+            };
+        }
+    </script>
+</body>
