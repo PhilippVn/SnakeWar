@@ -2,15 +2,15 @@ package server;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
-import org.eclipse.jetty.server.Connector;
+
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
@@ -20,26 +20,39 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
 public class SnakeServer{
 
     private Session s; // session used for responding without a request
-    private static final java.util.concurrent.CopyOnWriteArrayList<String> users = new CopyOnWriteArrayList<>();
+    private static final java.util.concurrent.CopyOnWriteArrayList<String> users = new CopyOnWriteArrayList<>(); // list of ip adresses
     private static final ConcurrentHashMap<String,Pair<String,Integer>> players = new ConcurrentHashMap<>(); // map of all playing users
     public static final int PORT = 51036;
 
     @OnOpen
     public void onOpen(Session session,
-                 EndpointConfig conf) throws IOException {
+                 EndpointConfig conf) {
         // Get session and WebSocket connection
         this.s = session;
-        var ip = session.getUserProperties().get("javax.websocket.endpoint.remoteAddress");
+        InetSocketAddress ip = (InetSocketAddress) session.getUserProperties().get("javax.websocket.endpoint.remoteAddress");
+        if(users.contains(ip.getAddress().getHostAddress())){
+            try {
+                session.getBasicRemote().sendText("U may only connect once!");
+                session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Double Connection"));
+            } catch (IOException ignored) {
+            }
+            
+            return;
+        }
+        users.add(ip.getAddress().getHostAddress());
         System.out.println("New Connection:" + ip);
         System.out.println(session.getUserProperties().toString());
     }
 
     @OnMessage
-    public void onMessage(Session session,  String msg) throws IOException {
+    public void onMessage(Session session,  String msg){
         // Handle new messages
         System.out.println("Recieved Message: " + msg);
         try {
-            session.getBasicRemote().sendText("Server response to:" + msg +  "\n>>> Hello from Server!");
+            String roomcode = Room.generateRoomId();
+            session.getBasicRemote().sendText("Here is your room code:" + roomcode);
+
+           Room.rooms.putIfAbsent(roomcode, new Pair());
          } catch (IOException e) { 
             throw new RuntimeException(e);
          }
@@ -49,15 +62,20 @@ public class SnakeServer{
     @OnClose
     public void onClose(Session session, CloseReason reason) {
         if(!reason.getReasonPhrase().isEmpty())
-            System.out.println("Connection closed: " + reason.getReasonPhrase());
+            System.out.println("Connection closed. Reason:" + reason.getReasonPhrase());
         else
             System.out.println("Connection closed.");
+        
+        users.remove(((InetSocketAddress) session.getUserProperties().get("javax.websocket.endpoint.remoteAddress")).getAddress().getHostAddress());
     }
 
 	
     @OnError
     public void onError(Session session, Throwable error) {
-
+        System.err.println("There was an Error:" + error.getMessage());
+        try {
+            session.close();
+        } catch (IOException ignored) {}
     }
 
     public static void main(String[] args) throws Exception{
@@ -70,6 +88,7 @@ public class SnakeServer{
         // Add Entpoints
         WebSocketServerContainerInitializer.configure(handler, (servletContext, wsContainer) -> {
             wsContainer.addEndpoint(SnakeServer.class);
+            wsContainer.addEndpoint(Room.class);
         });
 
         // start server

@@ -1,30 +1,53 @@
 package server;
 
-public class Pair<K,V> {
-    private K key;
-    private V value;
+public class Pair<F,S> {
+    private F first;
+    private S second;
 
-    public Pair(K key, V value) {
-        this.key = key;
-        this.value = value;
+    public Pair(){
+        this.first = null;
+        this.second = null;
     }
 
-    public K getKey() {
-        return key;
+    public Pair(F first, S second) {
+        this.first = first;
+        this.second = second;
     }
 
-    public void setKey(K key) {
-        this.key = key;
+    public boolean isFull(){
+        return this.first != null && this.second != null;
     }
 
-    public V getValue() {
-        return value;
+    public boolean hasFirst(){
+        return this.first != null;
     }
 
-    public void setValue(V value) {
-        this.value = value;
+    public boolean hasSecond(){
+        return this.second != null;
     }
 
+
+    public F getFirst() {
+        return first;
+    }
+
+
+
+    public void setFirst(F first) {
+        this.first = first;
+    }
+
+
+
+    public S getSecond() {
+        return second;
+    }
+
+
+
+    public void setSecond(S second) {
+        this.second = second;
+    }
     
     
 }
