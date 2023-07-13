@@ -3,9 +3,11 @@
 ## Room
 - [REQ] Client 1 requests Room
 - [RES] Client 1 get Room id
-- Client 1 is added to the room
+- Client 1 opens room link
 - Client 1 tells Client 2 Room id
-- [REQ] Client 2 joins and is added to the room
+- Client 2 opens room link
+- [RES] Client 1 & 2 sends his name to Room
+
 
 ## Game Start
 - Server inits game and positions of snakes and apple
@@ -14,6 +16,7 @@
 
 # Game
 - [REQ] Every Tick Server requests the input of the Clients
+- [RES] Clients send input
 - Server updates Game Logic
 - [RES] Server sends new positions, Game Over Status
 
@@ -30,6 +33,14 @@ JSON
 ```json
 {
     "message-code" : "room-request",
+    "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
+}
+```
+
+### Name 
+```json
+{
+    "message-code" : "client-name",
     "client-name" : "<name>",
     "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
