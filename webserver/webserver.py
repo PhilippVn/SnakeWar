@@ -3,7 +3,7 @@ import socketserver
 import os
 
 # Set the directory where your files are located
-directory = "serve/client"
+directory = "serve/"
 
 # Set the port number for the server
 port = 8000
