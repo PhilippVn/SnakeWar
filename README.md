@@ -31,4 +31,5 @@ Multiplayer snake game
     - change the port in `snake/server/app/src/SnakeServer.java`
     - change the port in `snake/server/start.bat`
 
- Be sure to rebuild the docker image!
+The Docker image pulls the repository so u will have to fork you own and update the Docker file accordingly. 
+Be sure to rebuild the docker image!
