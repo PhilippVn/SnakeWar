@@ -1,16 +1,16 @@
 package server.messages;
 
-import com.google.gson.Gson;
+import java.time.LocalDateTime;
 
-public class ClientInputMessage {
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+
+public class ClientInputMessage implements Message {
     private String messageCode;
     private String clientName;
     private int input;
-    private String timeStamp;
-
-    public ClientInputMessage() {
-        this.messageCode = "client-input";
-    }
+    private LocalDateTime timeStamp;
 
     public String getMessageCode() {
         return messageCode;
@@ -36,22 +36,24 @@ public class ClientInputMessage {
         this.input = input;
     }
 
-    public String getTimeStamp() {
+    public LocalDateTime getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(String timeStamp) {
+    public void setTimeStamp(LocalDateTime timeStamp) {
         this.timeStamp = timeStamp;
     }
 
     public String toJson() {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .setDateFormat("dd.MM.yyyy-HH.mm.ss")
+                .create();
         return gson.toJson(this);
     }
 
-    public static ClientInputMessage fromJson(String json) {
-        Gson gson = new Gson();
+    public ClientInputMessage fromJson(String json) throws JsonSyntaxException {
+
+        Gson gson = new GsonBuilder().setDateFormat("dd.MM.yyyy-HH.mm.ss").create();
         return gson.fromJson(json, ClientInputMessage.class);
     }
 }
-

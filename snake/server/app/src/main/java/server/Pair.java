@@ -1,10 +1,10 @@
 package server;
 
-public class Pair<F,S> {
+public class Pair<F, S> {
     private F first;
     private S second;
 
-    public Pair(){
+    public Pair() {
         this.first = null;
         this.second = null;
     }
@@ -14,40 +14,32 @@ public class Pair<F,S> {
         this.second = second;
     }
 
-    public boolean isFull(){
+    public boolean isFull() {
         return this.first != null && this.second != null;
     }
 
-    public boolean hasFirst(){
+    public boolean hasFirst() {
         return this.first != null;
     }
 
-    public boolean hasSecond(){
+    public boolean hasSecond() {
         return this.second != null;
     }
-
 
     public F getFirst() {
         return first;
     }
 
-
-
     public void setFirst(F first) {
         this.first = first;
     }
-
-
 
     public S getSecond() {
         return second;
     }
 
-
-
     public void setSecond(S second) {
         this.second = second;
     }
-    
-    
+
 }

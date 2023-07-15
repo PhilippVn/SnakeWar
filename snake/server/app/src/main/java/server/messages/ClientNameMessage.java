@@ -1,15 +1,15 @@
 package server.messages;
 
-import com.google.gson.Gson;
+import java.time.LocalDateTime;
 
-public class ClientNameMessage {
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+
+public class ClientNameMessage implements Message {
     private String messageCode;
     private String clientName;
-    private String timeStamp;
-
-    public ClientNameMessage() {
-        this.messageCode = "client-name";
-    }
+    private LocalDateTime timeStamp;
 
     public String getMessageCode() {
         return messageCode;
@@ -27,22 +27,24 @@ public class ClientNameMessage {
         this.clientName = clientName;
     }
 
-    public String getTimeStamp() {
+    public LocalDateTime getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(String timeStamp) {
+    public void setTimeStamp(LocalDateTime timeStamp) {
         this.timeStamp = timeStamp;
     }
 
     public String toJson() {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .setDateFormat("dd.MM.yyyy-HH.mm.ss")
+                .create();
         return gson.toJson(this);
     }
 
-    public static ClientNameMessage fromJson(String json) {
-        Gson gson = new Gson();
+    public ClientNameMessage fromJson(String json) throws JsonSyntaxException {
+
+        Gson gson = new GsonBuilder().setDateFormat("dd.MM.yyyy-HH.mm.ss").create();
         return gson.fromJson(json, ClientNameMessage.class);
     }
 }
-

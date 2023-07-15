@@ -1,14 +1,14 @@
 package server.messages;
 
+import java.time.LocalDateTime;
+
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
-public class ClientRoomRequestMessage {
+public class ClientRoomRequestMessage implements Message {
     private String messageCode;
-    private String timeStamp;
-
-    public ClientRoomRequestMessage() {
-        this.messageCode = "room-request";
-    }
+    private LocalDateTime timeStamp;
 
     public String getMessageCode() {
         return messageCode;
@@ -18,21 +18,24 @@ public class ClientRoomRequestMessage {
         this.messageCode = messageCode;
     }
 
-    public String getTimeStamp() {
+    public LocalDateTime getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(String timeStamp) {
+    public void setTimeStamp(LocalDateTime timeStamp) {
         this.timeStamp = timeStamp;
     }
 
     public String toJson() {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .setDateFormat("dd.MM.yyyy-HH.mm.ss")
+                .create();
         return gson.toJson(this);
     }
 
-    public static ClientRoomRequestMessage fromJson(String json) {
-        Gson gson = new Gson();
+    public ClientRoomRequestMessage fromJson(String json) throws JsonSyntaxException {
+
+        Gson gson = new GsonBuilder().setDateFormat("dd.MM.yyyy-HH.mm.ss").create();
         return gson.fromJson(json, ClientRoomRequestMessage.class);
     }
 }

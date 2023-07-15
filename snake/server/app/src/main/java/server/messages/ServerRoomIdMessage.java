@@ -1,15 +1,15 @@
 package server.messages;
 
+import java.time.LocalDateTime;
+
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
-public class ServerRoomIdMessage {
+public class ServerRoomIdMessage implements Message {
     private String messageCode;
-    private int roomId;
-    private String timeStamp;
-
-    public ServerRoomIdMessage() {
-        this.messageCode = "room-id";
-    }
+    private String roomId;
+    private LocalDateTime timeStamp;
 
     public String getMessageCode() {
         return messageCode;
@@ -19,30 +19,32 @@ public class ServerRoomIdMessage {
         this.messageCode = messageCode;
     }
 
-    public int getRoomId() {
+    public String getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(int roomId) {
+    public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
 
-    public String getTimeStamp() {
+    public LocalDateTime getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(String timeStamp) {
+    public void setTimeStamp(LocalDateTime timeStamp) {
         this.timeStamp = timeStamp;
     }
 
     public String toJson() {
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .setDateFormat("dd.MM.yyyy-HH.mm.ss")
+                .create();
         return gson.toJson(this);
     }
 
-    public static ServerRoomIdMessage fromJson(String json) {
-        Gson gson = new Gson();
+    public ServerRoomIdMessage fromJson(String json) throws JsonSyntaxException {
+
+        Gson gson = new GsonBuilder().setDateFormat("dd.MM.yyyy-HH.mm.ss").create();
         return gson.fromJson(json, ServerRoomIdMessage.class);
     }
 }
-
