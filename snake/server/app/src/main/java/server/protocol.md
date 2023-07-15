@@ -15,10 +15,9 @@
 - Clients render them
 
 # Game
-- [REQ] Every Tick Server requests the input of the Clients
-- [RES] Clients send input
+- [RES] Every Tick Clients send input
 - Server updates Game Logic
-- [RES] Server sends new positions, Game Over Status
+- [RES] Server sends new positions or Game Over Status
 
 # Game Stop
 - If a Client stops connection, or presses stop Game
@@ -32,36 +31,36 @@ JSON
 ### Room Request
 ```json
 {
-    "message-code" : "room-request",
-    "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
+    "message_code" : "room-request",
+    "time_stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
 ```
 
 ### Name 
 ```json
 {
-    "message-code" : "client-name",
-    "client-name" : "<name>",
-    "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
+    "message_code" : "client-name",
+    "client_name" : "<name>",
+    "time_stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
 ```
 
 ### Input
 ```json
 {
-    "message-code" : "client-input",
-    "client-name" : "<name>",
+    "message_code" : "client-input",
+    "client_name" : "<name>",
     "input" : <Ascii Key Code>,
-    "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
+    "time_stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
 ```
 
 ### Game Stop
 ```json
 {
-    "message-code" : "game-stop",
-    "client-name" : "<name>",
-    "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
+    "message_code" : "game-stop",
+    "client_name" : "<name>",
+    "time_stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
 ```
 
@@ -69,26 +68,28 @@ JSON
 ### Room id
 ```json
 {
-    "message-code" : "room-id",
-    "room-id" : <room-id>,
-    "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
+    "message_code" : "room-id",
+    "room_id" : "<room-id>",
+    "time_stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
 ```
 
 ### Game Start
 ```json
 {
-    "message-code" : "game-start",
-    "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
+    "message_code" : "game-start",
+    "time_stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
 ```
 
-### Position & Game Status Update
+### Position
 ```json
 {
-    "message-code" : "position-update",
-    "<client1-name>" : [
-        <length>,
+    "message_code" : "position-update",
+    "for_player" : <1,2>,
+    "player1_length" : <length>,
+    "player2_length" : <length>,
+    "player1_snake" : [
         {
             "isHead" : false,
             "x" : <x coordinate of segment>,
@@ -101,8 +102,7 @@ JSON
             "y" : <y coordinate of segment>
         }
     ],
-    "<client2-name>" [
-        <length>,
+    "player2_snake" [
         {
             "isHead" : false,
             "x" : <x coordinate of segment>,
@@ -115,13 +115,22 @@ JSON
             "y" : <y coordinate of segment>
         }
     ],
-    "apple" : [
+    "apple" :
         {
             "x" : <x coordinate of apple>,
             "y" : <y coordinate of apple>,
         }
-    ],
-    "game-over" : <true/false>
-    "time-stamp" : "<dd.mm.yyyy-hh.mm.ss>"
+    ,
+    "time_stamp" : "<dd.mm.yyyy-hh.mm.ss>"
+}
+```
+
+### Game Over
+```JSON
+{
+    "message_code" : "game-over",
+    "winner_exists" : <true/false>,
+    "winner-name" : "playerName",
+    "time_stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
 ```
