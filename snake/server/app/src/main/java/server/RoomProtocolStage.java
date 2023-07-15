@@ -1,0 +1,10 @@
+package server;
+
+public enum RoomProtocolStage {
+    CLIENT_NAME_MESSAGE,
+    SERVER_POSITION_UPDATE_MESSAGE,
+    Server_Game_OVER_MESSAGE,
+    SERVER_GAME_START_MESSAGE,
+    CLIENT_INPUT_MESSAGE,
+    CLIENT_GAME_STOP_REQUEST,
+}

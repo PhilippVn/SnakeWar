@@ -22,3 +22,11 @@ Multiplayer snake game
 - start the game server by building it with `./gradlew build` and run using `./gradlew run`
 - copy the Server-Url into your browser and enjoy some SNAKE :)
 - to stop the web server either kill the container with `docker kill` or press `ctr + c`
+
+# Change Ports
+- for webserver:
+    - change the port in `webserver/webserver.py`
+    - change the port in `webserver/start.bat`
+- for game server:
+    - change the port in `snake/server/app/src/SnakeServer.java`
+    - change the port in `snake/server/start.bat`

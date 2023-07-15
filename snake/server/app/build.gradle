@@ -36,6 +36,9 @@ dependencies {
     implementation 'org.eclipse.jetty.websocket:javax-websocket-client-impl:9.4.43.v20210629'
     implementation 'org.eclipse.jetty:jetty-server:9.4.43.v20210629'
     implementation 'org.eclipse.jetty:jetty-servlet:9.4.43.v20210629'
+
+    // GSON
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
 }
 
 application {
