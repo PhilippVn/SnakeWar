@@ -1,5 +1,5 @@
 # SnakeWar
-Multiplayer snake game
+Single and Multiplayer Snake Game
 
 # Requirements
 - Docker
@@ -11,16 +11,22 @@ Multiplayer snake game
 - Webserver
 
 # To Come:
-- multiplayer support
 - database
 
 # How to install and run?
 - clone the repo
+## Gameserver
+- goto `snake/server`
+- build docker image manually or use `build.bat`
+- start the docker container manually or use `start.bat`
+- to stop the game server either kill the container with `docker kill` or press `ctr + c`
+- paste the displayed websocket url in `snake/client/game.js` > gameserverIp
+
+## Webserver
 - go into `webserver`
 - build docker image manually or use `build.bat`
-- run container manually or with `start.bat`
-- start the game server by building it with `./gradlew build` and run using `./gradlew run`
-- copy the Server-Url into your browser and enjoy some SNAKE :)
+- run container manually or use `start.bat`
+- copy the displayed Server-Url into your browser and enjoy some SNAKE alone or with friends :)
 - to stop the web server either kill the container with `docker kill` or press `ctr + c`
 
 # Change Ports
@@ -30,3 +36,4 @@ Multiplayer snake game
 - for game server:
     - change the port in `snake/server/app/src/SnakeServer.java`
     - change the port in `snake/server/start.bat`
+    - update `snake/client/game.js` > gameserverIp
