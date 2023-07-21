@@ -16,9 +16,25 @@ public class Player {
         this.ip = ip;
     }
 
-    public int getScore() {
-        return snake.getLength();
+    
+
+    public void setSnake(Snake snake) {
+        this.snake = snake;
     }
+
+
+
+    public int getScore() {
+        return score;
+    }
+
+
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+
 
     public InetAddress getIp() {
         return ip;

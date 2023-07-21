@@ -49,7 +49,7 @@ JSON
 ```json
 {
     "message_code" : "client-input",
-    "client_name" : "<name>",
+    "player_number" : <1,2>,
     "input" : <Ascii Key Code>,
     "time_stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
@@ -78,6 +78,7 @@ JSON
 ```json
 {
     "message_code" : "game-start",
+    "player_number" : <1,2>,
     "time_stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
 ```
@@ -86,7 +87,6 @@ JSON
 ```json
 {
     "message_code" : "position-update",
-    "for_player" : <1,2>,
     "player1_length" : <length>,
     "player2_length" : <length>,
     "player1_snake" : [

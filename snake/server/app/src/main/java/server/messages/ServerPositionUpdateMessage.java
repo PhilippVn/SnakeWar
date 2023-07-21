@@ -5,13 +5,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import server.Apple;
+import server.LocalDateTimeTypeAdapter;
 import server.Snake;
 
 import java.time.LocalDateTime;
 
 public class ServerPositionUpdateMessage implements Message {
     private String messageCode;
-    private int forPlayer;
     private int player1Length;
     private int player2Length;
     private Snake player1Snake;
@@ -23,14 +23,15 @@ public class ServerPositionUpdateMessage implements Message {
 
     public String toJson() {
         Gson gson = new GsonBuilder()
-                .setDateFormat("dd.MM.yyyy-HH.mm.ss")
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
                 .create();
         return gson.toJson(this);
     }
 
     public ServerPositionUpdateMessage fromJson(String json) throws JsonSyntaxException {
+
         Gson gson = new GsonBuilder()
-                .setDateFormat("dd.MM.yyyy-HH.mm.ss")
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
                 .create();
         return gson.fromJson(json, ServerPositionUpdateMessage.class);
     }
@@ -55,13 +56,6 @@ public class ServerPositionUpdateMessage implements Message {
         this.timeStamp = timeStamp;
     }
 
-    public int getForPlayer() {
-        return forPlayer;
-    }
-
-    public void setForPlayer(int forPlayer) {
-        this.forPlayer = forPlayer;
-    }
 
     public int getPlayer1Length() {
         return player1Length;

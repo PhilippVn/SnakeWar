@@ -11,7 +11,7 @@ if %errorlevel% neq 0 (
     exit
 )
 
-REM Check if the container already exists
+REM Check if the container already exists TODO: make it restart container instead of deleting it
 docker inspect %CONTAINER_NAME% >nul 2>&1
 if %errorlevel% equ 0 (
     REM Container exists
@@ -27,6 +27,10 @@ if %errorlevel% equ 0 (
         exit /b
     )
 )
+
+REM Run ipconfig and filter the output to extract the IP address
+for /f "delims=[] tokens=2" %%a in ('ping -4 -n 1 %ComputerName% ^| findstr [') do set NetworkIP=%%a
+echo Server-URL: ws://%NetworkIP%:%PORT%
 
 REM Start the container
 echo Docker Container is running...

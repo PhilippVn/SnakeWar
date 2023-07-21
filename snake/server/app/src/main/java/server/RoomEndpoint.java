@@ -20,11 +20,12 @@ import javax.websocket.server.ServerEndpoint;
 public class RoomEndpoint {
    private String clientmsg = null;
    private boolean isConnected;
+   private Session session;
 
    @OnOpen
    public void open(Session session,
          EndpointConfig c,
-         @PathParam("room-id") String roomId) {
+         @PathParam("room-id") String roomId) { // TODO handle players that didnt join gameServer
 
       InetSocketAddress sip = (InetSocketAddress) session.getUserProperties()
             .get("javax.websocket.endpoint.remoteAddress");
@@ -44,13 +45,16 @@ public class RoomEndpoint {
             }
             return;
          }
-         isConnected = true;
+         this.isConnected = true;
+         this.session = session;
          // add roomendpoint to roomhandler
          if (!room.hasFirstRoomEndpoint()) {
             room.setRoomEndpoint1(this);
             room.setPlayer1(new Player(session, ip));
+            System.out.println("Added first player to room");
          } else {
             // check if its the same player trying to connect two times
+            /* 
             if (room.getPlayer1().getIp().equals(ip)) {
                System.out.println(ip + " tried to connect two times to the room: " + roomId);
                try {
@@ -59,10 +63,11 @@ public class RoomEndpoint {
                } catch (IOException ifnored) {
                }
                return;
-            }
-
+            } */
+            
             room.setRoomEndpoint2(this);
-            room.setPlayer2(new Player(session, ip)); // starts the room thread
+            room.setPlayer2(new Player(session, ip));
+            System.out.println("Added second player to room");
          }
 
       } catch (NoSuchElementException e) {
@@ -81,21 +86,46 @@ public class RoomEndpoint {
       this.clientmsg = msg;
    }
 
+   
+
+   public Session getSession() {
+      return session;
+   }
+
    @OnClose
    public void onClose(Session session, CloseReason reason) {
       // if one player closes the session the game ends
       isConnected = false;
+      System.out.println("Player disconnected from room");
    }
 
    @OnError
    public void onError(Session session, Throwable error) {
+      System.err.println("There was an Error:" + error.getMessage());
+      error.printStackTrace();
+      try {
+          session.close();
+      } catch (IOException ignored) {
+      }
+   }
 
+   public boolean hasClientMessage(){
+      return this.clientmsg != null;
    }
 
    public String readClientmsg() {
       String msg = this.clientmsg;
       this.clientmsg = null;
       return msg;
+   }
+
+   public void sendClientMsg(String msg){
+      try {
+         this.session.getBasicRemote().sendText(msg);
+      } catch (IOException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
    }
 
    public boolean isConnected() {
@@ -108,7 +138,7 @@ public class RoomEndpoint {
 
    private class RoomNumberGenerator {
       private static final String ROOM_NUMBER_CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-      private static final int ROOM_NUMBER_LENGTH = 16;
+      private static final int ROOM_NUMBER_LENGTH = 4;
 
       public static String generateRoomNumber() {
          SecureRandom secureRandom = new SecureRandom();

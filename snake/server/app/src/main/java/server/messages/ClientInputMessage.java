@@ -6,9 +6,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
+import server.LocalDateTimeTypeAdapter;
+
 public class ClientInputMessage implements Message {
     private String messageCode;
-    private String clientName;
+    private int playerNumber;
     private int input;
     private LocalDateTime timeStamp;
 
@@ -20,13 +22,7 @@ public class ClientInputMessage implements Message {
         this.messageCode = messageCode;
     }
 
-    public String getClientName() {
-        return clientName;
-    }
-
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
+    
 
     public int getInput() {
         return input;
@@ -46,14 +42,24 @@ public class ClientInputMessage implements Message {
 
     public String toJson() {
         Gson gson = new GsonBuilder()
-                .setDateFormat("dd.MM.yyyy-HH.mm.ss")
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
                 .create();
         return gson.toJson(this);
     }
 
     public ClientInputMessage fromJson(String json) throws JsonSyntaxException {
 
-        Gson gson = new GsonBuilder().setDateFormat("dd.MM.yyyy-HH.mm.ss").create();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
+                .create();
         return gson.fromJson(json, ClientInputMessage.class);
+    }
+
+    public int getPlayerNumber() {
+        return playerNumber;
+    }
+
+    public void setPlayerNumber(int playerNumber) {
+        this.playerNumber = playerNumber;
     }
 }

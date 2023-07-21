@@ -30,7 +30,7 @@ public class SnakeServer {
                                                                                                                      // rooms
     public static final java.util.concurrent.CopyOnWriteArrayList<Player> players = new CopyOnWriteArrayList<>(); // list
                                                                                                                   // active
-                                                                                                                  // players
+                                                                                                                  // players TODO: how to handle server users and room players?
 
     @OnOpen
     public void onOpen(Session session,
@@ -40,15 +40,17 @@ public class SnakeServer {
                 .get("javax.websocket.endpoint.remoteAddress");
         InetAddress ip = sip.getAddress();
 
+        /* 
         for (Player player : players) {
             if (player.getIp().equals(ip)) {
                 try {
                     session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY,
-                            "Multiply Connections are not allowed."));
+                            "Multiple Connections are not allowed."));
                 } catch (IOException ignored) {
                 }
+                return;
             }
-        }
+        }*/
         Player newPlayer = new Player(session, ip);
         players.add(newPlayer);
         System.out.println("New Player connected: " + newPlayer);
@@ -107,11 +109,14 @@ public class SnakeServer {
             System.out.println(player + "disconnected. Reason: " + reason.getReasonPhrase());
         else
             System.out.println(player + "disconnected.");
+        
+        players.remove(player);
     }
 
     @OnError
     public void onError(Session session, Throwable error) {
         System.err.println("There was an Error:" + error.getMessage());
+        error.printStackTrace();
         try {
             session.close();
         } catch (IOException ignored) {
@@ -135,9 +140,9 @@ public class SnakeServer {
         server.start();
 
         // print websocket adress
-        String ipAddress = InetAddress.getLocalHost().getHostAddress();
-        String address = "ws://" + ipAddress + ":" + PORT + "/snake";
-        System.out.println("WebSocket address:" + address);
+        //String ipAddress = InetAddress.getLocalHost().getHostAddress(); // TODO fix
+        //String address = "ws://" + ipAddress + ":" + PORT + "/snake";
+        //System.out.println("WebSocket address:" + address);
     }
 
     public static void startRoom(RoomHandler roomHandler) {

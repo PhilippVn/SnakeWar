@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -7,10 +8,21 @@
     <meta name="description" content="Multiplayer Snake Game">
     <meta name="author" content="Philipp von Neffe">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="https://img.freepik.com/premium-vector/simple-cartoon-icon-cartoon-illustration-green-snake_126267-9827.jpg?w=740">
+    <link rel="icon"
+        href="https://img.freepik.com/premium-vector/simple-cartoon-icon-cartoon-illustration-green-snake_126267-9827.jpg?w=740">
     <title>SnakeWar</title>
 
     <!-- scripts -->
+    <script src="./scripts/timeformatter.js"></script>
+    <script src="./scripts/roomProtocolStage.js"></script>
+    <script src="./scripts/messages/ClientGamestopMessage.js"></script>
+    <script src="./scripts/messages/ClientInputMessage.js"></script>
+    <script src="./scripts/messages/ClientNameMessage.js"></script>
+    <script src="./scripts/messages/ClientRoomRequestMessage.js"></script>
+    <script src="./scripts/messages/ServerGameOverMessage.js"></script>
+    <script src="./scripts/messages/ServerGameStartMessage.js"></script>
+    <script src="./scripts/messages/ServerPositionUpdateMessage.js"></script>
+    <script src="./scripts/messages/ServerRoomIdMessage.js"></script>
     <script src="./scripts/snake.js"></script>
     <script src="./scripts/apple.js"></script>
     <script src="./scripts/game.js"></script>
@@ -21,30 +33,69 @@
 
 <body>
 
-        <div id="score">
-            <p id="scorep">Score:</p>
-        </div>
-        <div id="gamestats">
-            <p id="fps">FPS:</p>
-            <p id="frametime">Frametime:</p>
-        </div>
-        <div class="sliders">
-            <label for="speed">Game Speed: x<output id="speed-value">6</output></label>
-            <input type="range" min="1" max="10" step="0.5" value="6" class="slider" id="speed">
-          </div>
-        <div id="gameboard">
-            <canvas id="canvas" width="1000" height="700"></canvas>
-        </div>
-    
-<script>
-    const speedslider = document.getElementById("speed");
-    const speedvalue = document.getElementById("speed-value")
+    <div id="score">
+        <p id="scorep">Score:</p>
+    </div>
+    <div id="gamestats">
+        <p id="fps">FPS:</p>
+        <p id="frametime">Frametime:</p>
+    </div>
+    <div id = "room">
+        <button onclick="showCreateRoom()">Create Room</button>
+        <button onclick="showJoinRoom()">Join Room</button>
 
-    speedslider.oninput = () => {
-        speedvalue.textContent = speedslider.value;
-    }
-    
-</script>
+        <!-- Create Room Text Field -->
+        <div id="createRoomField" class="roomNumberField">
+            <p id="roomNumber" name="roomNumberT"></p>
+        </div>
+
+        <!-- Join Room Text Field -->
+        <div id="joinRoomField" class="roomNumberField">
+            <label for="roomNumberInput">Room Number:</label>
+            <input type="text" id="roomNumberInput" name="roomNumberI" placeholder="Enter room number">
+            <button id="joinButton" onclick="joinRoom()" style="display: none;">Join!</button>
+        </div>
+
+        <script>
+            function showCreateRoom() {
+
+                establishGameServerConnection();
+
+                singlePlayer = false;
+                document.getElementById("sliders").style.display = "none";
+                document.getElementById("createRoomField").style.display = "block";
+                document.getElementById("joinRoomField").style.display = "none";
+            }
+
+            function showJoinRoom() {
+                singlePlayer = false;
+                document.getElementById("sliders").style.display = "none";
+                document.getElementById("createRoomField").style.display = "none";
+                document.getElementById("joinRoomField").style.display = "block";
+                document.getElementById("joinButton").style.display = "block";
+            }
+
+            function joinRoom() {
+                establishRoomConnection();
+            }
+        </script>
+    </div>
+    <div id="sliders" class="sliders">
+        <label for="speed">Game Speed: x<output id="speed-value">6</output></label>
+        <input type="range" min="1" max="10" step="0.5" value="6" class="slider" id="speed">
+    </div>
+    <div id="gameboard">
+        <canvas id="canvas" width="1000" height="700"></canvas>
+    </div>
+
+    <script>
+        const speedslider = document.getElementById("speed");
+        const speedvalue = document.getElementById("speed-value")
+
+        speedslider.oninput = () => {
+            speedvalue.textContent = speedslider.value;
+        }
+
+    </script>
 
 </body>
-
