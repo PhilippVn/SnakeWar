@@ -1,5 +1,5 @@
 # SnakeWar
-Single and two-player multiplayer snake game featuring an own webserver and gameserver with private game rooms for you and your friends :) 
+Single and two-player multiplayer snake game featuring an own docker-virtualized webserver and gameserver with private game rooms for you and your friends :) 
 
 # Requirements
 - Docker
