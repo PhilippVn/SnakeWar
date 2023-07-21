@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
+import server.LocalDateTimeTypeAdapter;
+
 public class ServerGameOverMessage implements Message {
 
     private String messageCode;
@@ -13,18 +15,17 @@ public class ServerGameOverMessage implements Message {
     private String winnerName;
     private LocalDateTime timeStamp;
 
-    @Override
     public String toJson() {
         Gson gson = new GsonBuilder()
-                .setDateFormat("dd.MM.yyyy-HH.mm.ss")
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
                 .create();
         return gson.toJson(this);
     }
 
-    @Override
     public ServerGameOverMessage fromJson(String json) throws JsonSyntaxException {
+
         Gson gson = new GsonBuilder()
-                .setDateFormat("dd.MM.yyyy-HH.mm.ss")
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
                 .create();
         return gson.fromJson(json, ServerGameOverMessage.class);
     }

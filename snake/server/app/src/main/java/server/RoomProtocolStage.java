@@ -1,5 +1,6 @@
 package server;
 
+
 public enum RoomProtocolStage {
     CLIENT_NAME_MESSAGE,
     SERVER_POSITION_UPDATE_MESSAGE,

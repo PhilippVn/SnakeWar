@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
+import server.LocalDateTimeTypeAdapter;
+
 public class ClientGameStopMessage implements Message {
     private String messageCode;
     private String clientName;
@@ -37,14 +39,16 @@ public class ClientGameStopMessage implements Message {
 
     public String toJson() {
         Gson gson = new GsonBuilder()
-                .setDateFormat("dd.MM.yyyy-HH.mm.ss")
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
                 .create();
         return gson.toJson(this);
     }
 
     public ClientGameStopMessage fromJson(String json) throws JsonSyntaxException {
 
-        Gson gson = new GsonBuilder().setDateFormat("dd.MM.yyyy-HH.mm.ss").create();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeTypeAdapter())
+                .create();
         return gson.fromJson(json, ClientGameStopMessage.class);
     }
 
