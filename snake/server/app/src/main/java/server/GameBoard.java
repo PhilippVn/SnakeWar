@@ -6,5 +6,5 @@ public class GameBoard {
     public static final int GAME_GRIDSIZE = 25;
     public static final int GAME_STEPSIZE = GAME_GRIDSIZE;
     public static final int GAME_DEFAULT_GAME_SPEED = 500;
-    public static final int GAME_SPEED_MODIFIER = 3;
+    public static final int GAME_SPEED_MODIFIER = 5;
 }

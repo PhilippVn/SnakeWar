@@ -49,7 +49,8 @@ function establishRoomConnection() {
         const clientNameMessage = new ClientNameMessage();
 
         clientNameMessage.messageCode = "client-name"
-        clientNameMessage.clientName = prompt("What is your name?"); // promt user for username
+        clientName = prompt("What is your name?"); // promt user for username
+        clientNameMessage.clientName = clientName;
         clientNameMessage.timeStamp = new Date();
 
         const msg = clientNameMessage.toJson();
@@ -73,9 +74,33 @@ function establishRoomConnection() {
             }
 
             case ProtocolStage.SERVER_POSITION_UPDATE_MESSAGE: {
-                // TODO check for GameOver Message -> JSON Parse error handling?
                 // recieve updates
-                const msg = ServerPositionUpdateMessage.fromJson(event.data);
+                let msg = ServerPositionUpdateMessage.fromJson(event.data);
+
+                if(msg.messageCode == "game-over"){
+                    msg = ServerGameOverMessage.fromJson(event.data);
+                    if(msg.winnerExists){
+                        if(msg.winnerName == clientName){
+                            ctx.fillStyle = "green";
+                            ctx.font = 'italic 125pt Calibri';
+                            ctx.fillText("YOU WON!", 25, 125);
+                        }else{
+                            ctx.fillStyle = "red";
+                            ctx.font = 'italic 125pt Calibri';
+                            ctx.fillText("YOU LOST!", 25, 125);
+                        }
+                    }else{
+                        ctx.fillStyle = "grey";
+                        ctx.font = 'italic 125pt Calibri';
+                        ctx.fillText("ITS A TIE!", 25, 125);
+                    }
+                    connectedToGameServer = false;
+                    connectedToRoom = false;
+                    gameserver.close();
+                    room.close();
+                    return;
+                }
+
                 player1Snake = msg.player1Snake;
                 player2Snake = msg.player2Snake;
                 apple = msg.apple;
@@ -189,6 +214,7 @@ let connectedToRoom = false;
 let playerNumber;
 let player2Snake;
 let asciiKeyCode;
+let clientName;
 // single player
 
 let score;

@@ -1,7 +1,6 @@
 package server;
 
 import java.io.IOException;
-import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -10,6 +9,7 @@ import javax.websocket.CloseReason.CloseCodes;
 
 import server.messages.ClientInputMessage;
 import server.messages.ClientNameMessage;
+import server.messages.ServerGameOverMessage;
 import server.messages.ServerGameStartMessage;
 import server.messages.ServerPositionUpdateMessage;
 
@@ -22,6 +22,7 @@ public class RoomHandler implements Runnable {
     private Player player1 = null;
     private Player player2 = null;
     private Apple apple;
+    private Player winner;
 
     public RoomHandler(String roomId) {
         this.roomId = roomId;
@@ -152,14 +153,28 @@ public class RoomHandler implements Runnable {
                         snake2HitSnake1 = false;
                     }
 
+                    if(snake1HitSnake2 && snake2HitSnake1){
+                        // no winner
+                        protocolStage = RoomProtocolStage.Server_Game_OVER_MESSAGE;
+                        winner = null;
+                        break;
+                    }
+
                     if(snake1HitSnake2){
                         // TODO GAME OVER -> SNAKE 2 WON
                         protocolStage = RoomProtocolStage.Server_Game_OVER_MESSAGE;
+                        winner = player2;
+                        System.out.println("Snake 1 is controlled by:" + player1.getName() + " and collided.\n>>> The winner is: " + winner.getName());
+                        break;
                     }
 
                     if(snake2HitSnake1){
                         // TODO GAME OVER -> SNAKE 1 WON
                         protocolStage = RoomProtocolStage.Server_Game_OVER_MESSAGE;
+                        winner = player1;
+                        System.out.println("Snake 2 is controlled by:" + player2.getName() + " and collided.\\n" + //
+                                ">>> The winner is: \" + winner.getName()");
+                        break;
                     }
 
 
@@ -202,7 +217,7 @@ public class RoomHandler implements Runnable {
                     logClientMsg(cnmsg2);
 
                     ClientNameMessage cnm1 = new ClientNameMessage().fromJson(cnmsg1);
-                    ClientNameMessage cnm2 = new ClientNameMessage().fromJson(cnmsg1);
+                    ClientNameMessage cnm2 = new ClientNameMessage().fromJson(cnmsg2);
 
                     if (!cnm1.getMessageCode().equals("client-name") || !cnm2.getMessageCode().equals("client-name")) {
                         closeRoom(CloseReason.CloseCodes.PROTOCOL_ERROR, "Expected client name message.");
@@ -273,9 +288,24 @@ public class RoomHandler implements Runnable {
                     protocolStage = RoomProtocolStage.CLIENT_INPUT_MESSAGE;
                     break;
                 case Server_Game_OVER_MESSAGE:
+                    ServerGameOverMessage sgo = new ServerGameOverMessage();
+                    sgo.setMessageCode("game-over");
+                    if(winner != null){
+                        sgo.setWinnerExists(true);
+                        sgo.setWinnerName(winner.getName());
+                    }else{
+                        sgo.setWinnerExists(false);
+                        sgo.setWinnerName("");
+                    }
+                    sgo.setTimeStamp(LocalDateTime.now());
+
+                    logServerMsg(sgo.toJson());
+
+                    roomEndpoint1.sendClientMsg(sgo.toJson());
+                    roomEndpoint2.sendClientMsg(sgo.toJson());
+                    protocolStage = RoomProtocolStage.UNKNOWN;
                     break;
                 default:
-                    System.err.println("Unknown Protocol Stage");
                     break;
             }
         }
