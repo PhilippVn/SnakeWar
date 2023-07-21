@@ -1,17 +1,17 @@
 # SnakeWar
-Single and Multiplayer Snake Game
+Single and 2-player multiplayer snake game featuring a own webserver and gameserver with private game rooms for u and your friends 
 
 # Requirements
 - Docker
 - Java 17
-
 
 # Features
 - Snake Game
 - Webserver
 
 # To Come:
-- database
+- Database support
+- Public hosted web- and gameserver
 
 # How to install and run?
 - clone the repo
