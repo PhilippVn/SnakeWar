@@ -130,7 +130,7 @@ JSON
 {
     "message_code" : "game-over",
     "winner_exists" : <true/false>,
-    "winner-name" : "playerName",
+    "winner_name" : "playerName",
     "time_stamp" : "<dd.mm.yyyy-hh.mm.ss>"
 }
 ```

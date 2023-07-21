@@ -8,4 +8,5 @@ public enum RoomProtocolStage {
     SERVER_GAME_START_MESSAGE,
     CLIENT_INPUT_MESSAGE,
     CLIENT_GAME_STOP_REQUEST,
+    UNKNOWN,
 }
