@@ -3,7 +3,6 @@ Single and two-player multiplayer snake game featuring an own docker-virtualized
 
 # Requirements
 - Docker
-- Java 17
 
 # Features
 - Snake Game
