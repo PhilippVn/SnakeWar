@@ -39,7 +39,6 @@ function establishRoomConnection() {
     if (!connectedToGameServer) { // TODO check if empty websocket connection is good
         // establish websocket connection to game server but dont do anything
         gameserver = new WebSocket(gameserverIp + '/snake');
-        connectedToGameServer = true;
     }
 
     const roomCode = document.getElementById("roomNumberInput").value;
@@ -159,10 +158,10 @@ function establishGameServerConnection() {
         return;
 
     gameserver = new WebSocket(gameserverIp + '/snake');
-    connectedToGameServer = true;
 
     gameserver.onopen = function (event) {
         console.log('Connected to Game server');
+        connectedToGameServer = true;
 
         // Send a message to the server
         const roomRequestMessage = new ClientRoomRequestMessage();
@@ -183,6 +182,7 @@ function establishGameServerConnection() {
     };
 
     gameserver.onclose = function (event) {
+        connectedToGameServer = false;
         console.log('WebSocket closed with code:', event.code);
         console.log('Close reason:', event.reason);
         document.getElementById("roomNumber").innerText = "Error: Game Server Connection closed";
@@ -227,7 +227,7 @@ let fps;
 
 let stepSize = 25;
 
-let keyPressed;
+let keyPressed; // unused
 let key;
 
 let ctx;
@@ -380,11 +380,9 @@ document.addEventListener('keydown', (event) => {
     if (typeof ascii == "number" && ascii < 128) {
         //console.log(`${name} equals ASCII code ${ascii}`);
         if (name == 'w' || name == 'W' || name == 'd' || name == 'D' || name == 's' || name == 'S' || name == 'a' || name == 'A') {
-            if (!keyPressed) {
-                keyPressed = true;
-                key = name;
-                asciiKeyCode = ascii;
-            }
+            keyPressed = true;
+            key = name;
+            asciiKeyCode = ascii;
         }
     }
     else {
