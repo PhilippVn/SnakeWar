@@ -121,7 +121,7 @@ public class RoomHandler implements Runnable {
 
                     while(timeDelta < GameBoard.GAME_DEFAULT_GAME_SPEED/GameBoard.GAME_SPEED_MODIFIER){
                         try {
-                            Thread.sleep(10);
+                            Thread.sleep(1);
                         } catch (InterruptedException ignored) {
                         }
                         now = LocalDateTime.now();
@@ -325,6 +325,7 @@ public class RoomHandler implements Runnable {
 
         System.out.println("Closing room..."); // TODO check if this is good
         SnakeServer.rooms.remove(this);
+        System.out.println("Number of active rooms: " + SnakeServer.rooms.size());
     }
 
     private int[] handleUserinput(int x, int y, int input) {
