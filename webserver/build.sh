@@ -24,7 +24,7 @@ fi
 mkdir "$TEMP_FOLDER"
 
 # Copy the ../snake/client directory to the temporary folder
-cp -r ../snake/client "$TEMP_FOLDER"
+cp -r ../snake/client/. "$TEMP_FOLDER"
 
 echo "Building Docker image..."
 docker build -t "$IMAGE_NAME" .
