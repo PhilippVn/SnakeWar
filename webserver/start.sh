@@ -26,7 +26,11 @@ if docker inspect "$CONTAINER_NAME" &>/dev/null; then
 fi
 
 # Run ifconfig and filter the output to extract the IP address
-NetworkIP=$(ip route get 1 | awk '{print $NF; exit}')
+# Get the default gateway IP address
+DefaultGateway=$(ip route | awk '/default/ {print $3}')
+
+# Get the IP address of the interface associated with the default gateway
+NetworkIP=$(ifconfig | grep -B1 "$DefaultGateway" | awk '/inet / {print $2}' | cut -d ':' -f2)
 echo "Server-URL: http://$NetworkIP:$PORT/"
 
 # Start the container

@@ -28,7 +28,8 @@ if docker inspect "$CONTAINER_NAME" &>/dev/null; then
 fi
 
 # Run ifconfig and filter the output to extract the IP address
-NetworkIP=$(ip route get 1 | awk '{print $NF; exit}')
+DefaultGateway=$(ip route | awk '/default/ {print $3}')
+NetworkIP=$(ifconfig | grep -B1 "$DefaultGateway" | awk '/inet / {print $2}' | cut -d ':' -f2)
 echo "Server-URL: ws://$NetworkIP:$PORT/"
 
 # Start the container

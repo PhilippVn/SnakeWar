@@ -1,4 +1,5 @@
 @echo off
+setlocal enabledelayedexpansion
 
 set IMAGE_NAME=snake-webserver
 set CONTAINER_NAME=snake-webserver-container
@@ -27,8 +28,16 @@ if %errorlevel% equ 0 (
         exit /b
     )
 )
-REM Run ipconfig and filter the output to extract the IP address
-for /f "delims=[] tokens=2" %%a in ('ping -4 -n 1 %ComputerName% ^| findstr [') do set NetworkIP=%%a
+
+REM Get the default gateway IP address
+for /f "tokens=3" %%a in ('route print ^| findstr "\<0.0.0.0\>"') do set "DefaultGateway=%%a"
+
+REM Get the IP address of the interface associated with the default gateway
+for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr "!DefaultGateway!"') do set "NetworkIP=%%a"
+
+REM Remove leading and trailing spaces from the IP address
+set "NetworkIP=%NetworkIP: =%"
+set "NetworkIP=%NetworkIP::=%"
 echo Server-URL: http://%NetworkIP%:%PORT%
 
 REM Start the container
