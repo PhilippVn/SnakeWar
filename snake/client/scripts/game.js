@@ -205,7 +205,7 @@ function logServerMessage(msg) {
 }
 
 // multiplayer
-const gameserverIp = "ws://192.168.178.183:51036";
+const gameserverIp = "";
 let gameserver; // websocket connection to gameserver
 let room; // websocket connection to room
 let protocolStage = ProtocolStage.CLIENT_NAME_MESSAGE;
