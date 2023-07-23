@@ -132,6 +132,10 @@ public class Snake {
                 && (myHead.getX() == other.getRemoved().getX()) && (myHead.getY() == other.getRemoved().getY())){
                     return true;
                 }
+                // check for normal collision
+                if((myHead.getX() == otherHead.getX()) && (myHead.getY() == otherHead.getY())){
+                    return true;
+                }
         }else{
             // check if head collides with any segment from the other snake
             for(int i = 0; i < other.getSegments().size(); ++i){
