@@ -30,7 +30,7 @@ fi
 # Run ifconfig and filter the output to extract the IP address
 DefaultGateway=$(ip route | awk '/default/ {print $3}')
 NetworkIP=$(ifconfig | grep -B1 "$DefaultGateway" | awk '/inet / {print $2}' | cut -d ':' -f2)
-echo "Server-URL: ws://$NetworkIP:$PORT/"
+echo "Server-URL: ws://$NetworkIP:$PORT"
 
 # Start the container
 echo "Docker Container is running..."
