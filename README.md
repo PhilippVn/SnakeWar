@@ -14,17 +14,18 @@ Single and two-player multiplayer snake game featuring an own docker-virtualized
 
 # How to install and run?
 - clone the repo
+  
 ## Gameserver
 - goto `snake/server`
-- build docker image manually or use `build.bat`
-- start the docker container manually or use `start.bat`
+- build docker image manually or use `build.bat`/`build.sh`
+- start the docker container manually or use `start.bat`/`start.sh`
 - to stop the game server either kill the container with `docker kill` or press `ctr + c`
 - paste the displayed websocket url in `snake/client/game.js` > gameserverIp
 
 ## Webserver
 - go into `webserver`
-- build docker image manually or use `build.bat`
-- run container manually or use `start.bat`
+- build docker image manually or use `build.bat`/`build.sh`
+- run container manually or use `start.bat`/`start.sh`
 - copy the displayed Server-Url into your browser and enjoy some SNAKE alone or with friends :)
 - to stop the web server either kill the container with `docker kill` or press `ctr + c`
 
