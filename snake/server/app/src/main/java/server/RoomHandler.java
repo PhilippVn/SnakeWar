@@ -23,6 +23,8 @@ public class RoomHandler implements Runnable {
     private Player player2 = null;
     private Apple apple;
     private Player winner;
+    private boolean gameOver = false;
+    private boolean shouldLogMessages = false;
 
     public RoomHandler(String roomId) {
         this.roomId = roomId;
@@ -103,8 +105,9 @@ public class RoomHandler implements Runnable {
     public void run() {
         System.out.print("ROOM STARTED");
         LocalDateTime last = LocalDateTime.now();
+        boolean shouldRun = true;
         // TODO implement Game Loop and Message Protocol
-        while (roomEndpoint1.isConnected() && roomEndpoint2.isConnected()) {
+        while (roomEndpoint1.isConnected() && roomEndpoint2.isConnected() && shouldRun) {
             switch (protocolStage) {
                 case CLIENT_GAME_STOP_REQUEST:
                     break;
@@ -112,6 +115,7 @@ public class RoomHandler implements Runnable {
                     while (!roomEndpoint1.hasClientMessage() || !roomEndpoint2.hasClientMessage()) {
                         try {
                             Thread.sleep(100);
+                            System.out.println("Thread sleeps for user input...");
                         } catch (InterruptedException ignored) {
                         }
                     }
@@ -166,34 +170,28 @@ public class RoomHandler implements Runnable {
                     boolean snake1HitSnake2 = player1.getSnake().detectCollision(player2.getSnake());
                     boolean snake2HitSnake1 = player2.getSnake().detectCollision(player1.getSnake());
 
-                    if(snake1AteApple && snake2AteApple){
-                        // edge case where both eat an apple -> ignore collision
-                        snake1HitSnake2 = false;
-                        snake2HitSnake1 = false;
-                    }
-
                     if(snake1HitSnake2 && snake2HitSnake1){
                         // no winner
-                        protocolStage = RoomProtocolStage.Server_Game_OVER_MESSAGE;
+                        gameOver = true;
                         winner = null;
-                        break;
+                        
                     }
 
-                    if(snake1HitSnake2){
+                    else if(snake1HitSnake2){
                         // TODO GAME OVER -> SNAKE 2 WON
-                        protocolStage = RoomProtocolStage.Server_Game_OVER_MESSAGE;
+                        gameOver = true;
                         winner = player2;
                         System.out.println("Snake 1 is controlled by:" + player1.getName() + " and collided.\n>>> The winner is: " + winner.getName());
-                        break;
+                        
                     }
 
-                    if(snake2HitSnake1){
+                    else if(snake2HitSnake1){
                         // TODO GAME OVER -> SNAKE 1 WON
-                        protocolStage = RoomProtocolStage.Server_Game_OVER_MESSAGE;
+                        gameOver = true;
                         winner = player1;
-                        System.out.println("Snake 2 is controlled by:" + player2.getName() + " and collided.\\n" + //
-                                ">>> The winner is: \" + winner.getName()");
-                        break;
+                        System.out.println("Snake 2 is controlled by:" + player2.getName() + " and collided.\\n" + 
+                                ">>> The winner is: " + winner.getName());
+                        
                     }
 
 
@@ -295,7 +293,12 @@ public class RoomHandler implements Runnable {
 
                     roomEndpoint1.sendClientMsg(msgspu.toJson());
                     roomEndpoint2.sendClientMsg(msgspu.toJson());
-                    protocolStage = RoomProtocolStage.CLIENT_INPUT_MESSAGE;
+                    if(gameOver){
+                        protocolStage = RoomProtocolStage.Server_Game_OVER_MESSAGE;
+                    }else{
+                        protocolStage = RoomProtocolStage.CLIENT_INPUT_MESSAGE;
+                    }
+                    
                     break;
                 case Server_Game_OVER_MESSAGE:
                     ServerGameOverMessage sgo = new ServerGameOverMessage();
@@ -314,14 +317,23 @@ public class RoomHandler implements Runnable {
                     roomEndpoint1.sendClientMsg(sgo.toJson());
                     roomEndpoint2.sendClientMsg(sgo.toJson());
                     protocolStage = RoomProtocolStage.UNKNOWN;
+                    System.out.println("Sent game over message!");
                     break;
                 default:
+                    System.out.println("unknown protocol stage");
+                    shouldRun = false;
                     break;
             }
         }
 
-        System.err.println("One of the players disconnected from room");
-        if(roomEndpoint1.isConnected()){
+        if(roomEndpoint1.isConnected() && roomEndpoint2.isConnected()){
+            try {
+                roomEndpoint1.getSession().close(new CloseReason(CloseCodes.NORMAL_CLOSURE, "Room closed"));
+                roomEndpoint2.getSession().close(new CloseReason(CloseCodes.NORMAL_CLOSURE, "Room closed"));
+            } catch (IOException ignored) {
+            }
+        }
+        else if(roomEndpoint1.isConnected()){
             try {
                 roomEndpoint1.getSession().close(new CloseReason(CloseCodes.CLOSED_ABNORMALLY, "One of the players disconnected from room"));
             } catch (IOException ignored) {
@@ -333,7 +345,7 @@ public class RoomHandler implements Runnable {
             }
         }
 
-        System.out.println("Closing room..."); // TODO check if this is good
+        System.out.println("Closing room...");
         SnakeServer.rooms.remove(this);
         System.out.println("Number of active rooms: " + SnakeServer.rooms.size());
     }
@@ -376,10 +388,12 @@ public class RoomHandler implements Runnable {
     }
 
     public void logClientMsg(String msg) {
-        System.out.println("Message from Client:" + msg);
+        if(shouldLogMessages)
+            System.out.println("Message from Client:" + msg);
     }
 
     public void logServerMsg(String msg) {
+        if(shouldLogMessages)
         System.out.println("Message from Server:" + msg);
     }
 

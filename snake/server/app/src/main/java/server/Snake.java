@@ -140,9 +140,6 @@ public class Snake {
             // check if head collides with any segment from the other snake
             for(int i = 0; i < other.getSegments().size(); ++i){
                 Snake.Segment segment = other.getSegments().get(i);
-                if(segment.isHead()){
-                    continue;
-                }
                 if((myHead.getX() == segment.getX()) && (myHead.getY() == segment.getY())){
                     return true;
                 }
