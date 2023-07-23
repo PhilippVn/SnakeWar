@@ -25,7 +25,7 @@ public class RoomEndpoint {
    @OnOpen
    public void open(Session session,
          EndpointConfig c,
-         @PathParam("room-id") String roomId) { // TODO handle players that didnt join gameServer
+         @PathParam("room-id") String roomId) { 
 
       InetSocketAddress sip = (InetSocketAddress) session.getUserProperties()
             .get("javax.websocket.endpoint.remoteAddress");

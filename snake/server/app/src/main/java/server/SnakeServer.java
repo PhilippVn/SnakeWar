@@ -117,10 +117,6 @@ public class SnakeServer {
     public void onError(Session session, Throwable error) {
         System.err.println("There was an Error:" + error.getMessage());
         error.printStackTrace();
-        try {
-            session.close();
-        } catch (IOException ignored) {
-        }
     }
 
     public static void main(String[] args) throws Exception {

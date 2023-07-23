@@ -10,6 +10,40 @@ window.onload = () => {
     ctx.font = 'italic 12pt Calibri';
 
     setupSinglePlayerGame();
+
+    // add button listeners
+    const buttonShowCreateRoom = document.getElementById("button-show-create-room");
+    const buttonShowJoinRoom = document.getElementById("button-show-join-room");
+    const buttonJoinRoom = document.getElementById("button-join-room");
+
+    buttonShowCreateRoom.addEventListener("click", function () {
+        establishGameServerConnection();
+
+        singlePlayer = false;
+        document.getElementById("sliders").style.display = "none";
+        document.getElementById("createRoomField").style.display = "block";
+        document.getElementById("joinRoomField").style.display = "none";
+    });
+
+    buttonShowJoinRoom.addEventListener("click", function () {
+        singlePlayer = false;
+        document.getElementById("sliders").style.display = "none";
+        document.getElementById("createRoomField").style.display = "none";
+        document.getElementById("joinRoomField").style.display = "block";
+        document.getElementById("button-join-room").style.display = "block";
+    });
+
+    buttonJoinRoom.addEventListener("click", function () {
+        establishRoomConnection();
+    });
+
+    // add slider listeners
+    const speedslider = document.getElementById("speed");
+    speedvalue = document.getElementById("speed-value")
+
+    speedslider.oninput = () => {
+        speedvalue.textContent = speedslider.value;
+    }
 }
 
 function setupSinglePlayerGame() {
@@ -41,11 +75,10 @@ function establishRoomConnection() {
         gameserver = new WebSocket(gameserverIp + '/snake');
     }
 
-    drawWaitingForPlayers();
-
     const roomCode = document.getElementById("roomNumberInput").value;
     room = new WebSocket(gameserverIp + "/snake/room/" + roomCode);
     room.onopen = function (event) {
+        drawWaitingForPlayers();
         connectedToRoom = true;
         const clientNameMessage = new ClientNameMessage();
 
@@ -78,15 +111,15 @@ function establishRoomConnection() {
                 // recieve updates
                 let msg = ServerPositionUpdateMessage.fromJson(event.data);
 
-                if(msg.messageCode == "game-over"){
+                if (msg.messageCode == "game-over") {
                     msg = ServerGameOverMessage.fromJson(event.data);
-                    if(msg.winnerExists){
-                        if(msg.winnerName == clientName){
+                    if (msg.winnerExists) {
+                        if (msg.winnerName == clientName) {
                             drawWin();
-                        }else{
+                        } else {
                             drawLoss();
                         }
-                    }else{
+                    } else {
                         drawTie();
                     }
                     connectedToGameServer = false;
@@ -139,12 +172,18 @@ function establishRoomConnection() {
         connectedToRoom = false;
         console.log('WebSocket closed with code:', event.code);
         console.log('Close reason:', event.reason);
-        document.getElementById("roomNumber").innerText = "Error: Room Connection closed";
+        // check for abnormal room close
+        if(event.reason == "Room is full"){
+            alert("Failed to join room: Room is full");
+        }
+
+        if(event.reason == "Invalid Room id"){
+            alert("Failed to join room: Invalid Room Id");
+        }
     };
 
     room.onerror = function (event) {
         console.error('WebSocket error:', event);
-        document.getElementById("roomNumberInput").innerText = "Error: Room Connection error. (Check console for details)";
     };
 }
 
@@ -183,12 +222,10 @@ function establishGameServerConnection() {
         connectedToGameServer = false;
         console.log('WebSocket closed with code:', event.code);
         console.log('Close reason:', event.reason);
-        document.getElementById("roomNumber").innerText = "Error: Game Server Connection closed";
     };
 
     gameserver.onerror = function (event) {
         console.error('WebSocket error:', event);
-        document.getElementById("roomNumber").innerText = "Error: Game Server Connection error. (Check console for details)";
     };
 }
 
@@ -202,61 +239,61 @@ function logServerMessage(msg) {
     console.log(msg);
 }
 
-function drawMultiplayerMode(ctx){
-    ctx.clearRect(0,0,1000,700);
+function drawMultiplayerMode() {
+    ctx.clearRect(0, 0, 1000, 700);
     ctx.fillStyle = "green";
     ctx.font = 'italic 70pt Calibri';
-    ctx.fillText("Snake Multiplayer",0,100);
-  }
+    ctx.fillText("Snake Multiplayer", 0, 100);
+}
 
-  function drawWaitingForPlayers(){
+function drawWaitingForPlayers() {
     drawMultiplayerMode();
     ctx.fillStyle = "grey";
     ctx.font = 'italic 35pt Calibri';
-    ctx.fillText("Waiting for players...", 0,200);
-  }
+    ctx.fillText("Waiting for players...", 0, 200);
+}
 
-  function drawWin(){
-    ctx.clearRect(0,0,1000,700);
+function drawWin() {
+    ctx.clearRect(0, 0, 1000, 700);
     ctx.fillStyle = "green";
     ctx.font = 'italic 100pt Calibri';
     ctx.fillText("YOU WON!", 200, 300);
     ctx.font = 'italic 50pt Calibri';
-    if(playerNumber == 1){
+    if (playerNumber == 1) {
         ctx.fillText("Final Score: " + player1Snake.getLength, 200, 400);
-    }else{
+    } else {
         ctx.fillText("Final Score: " + player2Snake.getLength, 200, 400);
     }
-    
-  }
-  function drawLoss(){
-    ctx.clearRect(0,0,1000,700);
+
+}
+function drawLoss() {
+    ctx.clearRect(0, 0, 1000, 700);
     ctx.fillStyle = "red";
     ctx.font = 'italic 100pt Calibri';
     ctx.fillText("YOU LOST!", 200, 300);
     ctx.font = 'italic 50pt Calibri';
-    if(playerNumber == 1){
+    if (playerNumber == 1) {
         ctx.fillText("Final Score: " + player1Snake.getLength, 200, 400);
-    }else{
+    } else {
         ctx.fillText("Final Score: " + player2Snake.getLength, 200, 400);
     }
-  }
+}
 
-  function drawTie(){
+function drawTie() {
     ctx.fillStyle = "grey";
     ctx.font = 'italic 100pt Calibri';
     ctx.fillText("ITS A TIE!", 200, 300);
     ctx.font = 'italic 50pt Calibri';
     ctx.fillStyle = "black"
-    if(playerNumber == 1){
+    if (playerNumber == 1) {
         ctx.fillText("Final Score: " + player1Snake.getLength, 200, 400);
-    }else{
+    } else {
         ctx.fillText("Final Score: " + player2Snake.getLength, 200, 400);
     }
-  }
+}
 
 // multiplayer
-const gameserverIp = "";
+const gameserverIp = "ws://212.227.179.145:51036";
 let gameserver; // websocket connection to gameserver
 let room; // websocket connection to room
 let protocolStage = ProtocolStage.CLIENT_NAME_MESSAGE;
@@ -294,6 +331,7 @@ let apple;
 
 const DEFAULT_GAME_SPEED = 500;
 let gameSpeedMultiplier;
+let speedvalue;
 
 function gameLoop(timeStamp) {
     secondsPassed = (timeStamp - oldTimeStamp) / 1000;
@@ -330,6 +368,8 @@ function gameLoop(timeStamp) {
 
 
         // paint
+        if (!singlePlayer)
+            return;
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         //drawGrid(25,25,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
@@ -339,9 +379,6 @@ function gameLoop(timeStamp) {
         player1Snake.draw(true);
 
         apple.draw();
-
-        if (!singlePlayer)
-            return;
 
         if (gameOver) {
             ctx.fillStyle = "red";
@@ -354,9 +391,9 @@ function gameLoop(timeStamp) {
 
         score.innerText = `Score: ${player1Snake.getLength}`;
 
-        ctx.fillStyle = "black";
-        ctx.fillText('X:' + x, 10, 20);
-        ctx.fillText('Y:' + y, 10, 40);
+        //ctx.fillStyle = "black";
+        //ctx.fillText('X:' + x, 10, 20);
+        //ctx.fillText('Y:' + y, 10, 40);
 
         last = timeStamp;
     }
