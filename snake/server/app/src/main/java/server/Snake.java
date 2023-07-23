@@ -33,6 +33,9 @@ public class Snake {
     }
 
     public void move(int x, int y) {
+        if(this.segments.get(this.segments.size()-1).getX() == x && this.segments.get(this.segments.size()-1).getY() == y){
+            return;
+        }
         this.removed = this.segments.remove(0);
         length = this.segments.size();
 
@@ -84,6 +87,7 @@ public class Snake {
 
         return possibleSpawnLocations.get(r);
     }
+    
 
     /**
      * checks if the head of this sneak collided with itsself or the other snake
@@ -94,18 +98,27 @@ public class Snake {
     public boolean detectCollision(Snake other) {
 
         // check if collision with itsself
-        for (Snake.Segment segment : this.segments) {
-            if (segment.isHead) {
-                continue;
-            }
+        List<Snake.Segment> extendedSegments = new ArrayList<>();
+        extendedSegments.addAll(segments);
+        if(removed != null){
+            extendedSegments.add(0,removed);
+        }
+        for (int i = 0; i < extendedSegments.size() - 1; ++i){
+            Snake.Segment segment = extendedSegments.get(i);
             if (segment.getX() == this.segments.get(this.segments.size() - 1).getX()
                     && segment.getY() == this.segments.get(this.segments.size() - 1).getY()) {
                 return true;
             }
         }
 
+        List<Snake.Segment> extendedOtherSegments = new ArrayList<>();
+        extendedOtherSegments.addAll(other.getSegments());
+        if(other.getRemoved() != null){
+            extendedOtherSegments.add(0,other.getRemoved());
+        }
         // check if collision with other snake
-        for (Snake.Segment segment : other.getSegments()) {
+        for (int i = 0; i < extendedOtherSegments.size() - 1; ++i){
+            Snake.Segment segment = extendedOtherSegments.get(i);
             if (segment.getX() == this.segments.get(this.segments.size() - 1).getX()
                     && segment.getY() == this.segments.get(this.segments.size() - 1).getY()) {
                 return true;
@@ -149,5 +162,9 @@ public class Snake {
             this.isHead = isHead;
         }
 
+    }
+
+    public Snake.Segment getRemoved() {
+        return removed;
     }
 }
