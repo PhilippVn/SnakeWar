@@ -36,3 +36,9 @@ Single and two-player multiplayer snake game featuring an own docker-virtualized
     - change the port in `snake/server/app/src/SnakeServer.java`
     - change the port in `snake/server/start.bat`
     - update `snake/client/game.js` > gameserverIp
+
+# FAQ
+## I get a permission error when trying to execute the shell scripts
+The shell scripts are missing the execute flag. Add it with `chmod +x *.sh` in `webserver` and `snake/server`
+## I get a gradlew permission error when running the game server container
+Same as with the shell scripts: Execute `chmod +x gradlew` in `snake/server`
