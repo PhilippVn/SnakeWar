@@ -33,6 +33,7 @@ public class Snake {
     }
 
     public void move(int x, int y) {
+        // if the snake didnt move do nothing
         if(this.segments.get(this.segments.size()-1).getX() == x && this.segments.get(this.segments.size()-1).getY() == y){
             return;
         }
@@ -97,31 +98,44 @@ public class Snake {
      */
     public boolean detectCollision(Snake other) {
 
+        // problem: segments going through each other without colliding
+        // happens if snake of length two goes though itsself or when two snakes of length 1 who are direct neighbours go against each other
+        // => check removed segment
+
         // check if collision with itsself
-        List<Snake.Segment> extendedSegments = new ArrayList<>();
-        extendedSegments.addAll(segments);
-        if(removed != null){
-            extendedSegments.add(0,removed);
-        }
-        for (int i = 0; i < extendedSegments.size() - 1; ++i){
-            Snake.Segment segment = extendedSegments.get(i);
-            if (segment.getX() == this.segments.get(this.segments.size() - 1).getX()
-                    && segment.getY() == this.segments.get(this.segments.size() - 1).getY()) {
-                return true;
+        Snake.Segment myHead = this.segments.get(this.segments.size()-1);
+        if(this.segments.size() == 2){
+            if(removed != null){
+                if((myHead.getX() == removed.getX()) && (myHead.getY() == removed.getY())){
+                    return true;
+                }
+            }
+        }else{
+            // check if head collides with any other segment
+            for(int i = 0; i < this.segments.size() - 1;++i){
+                Snake.Segment segment = this.segments.get(i);
+                if((myHead.getX() == segment.getX()) && (myHead.getY() == segment.getY())){
+                    return true;
+                }
             }
         }
 
-        List<Snake.Segment> extendedOtherSegments = new ArrayList<>();
-        extendedOtherSegments.addAll(other.getSegments());
-        if(other.getRemoved() != null){
-            extendedOtherSegments.add(0,other.getRemoved());
-        }
+        Snake.Segment otherHead = other.getSegments().get(other.getSegments().size() -1);
         // check if collision with other snake
-        for (int i = 0; i < extendedOtherSegments.size() - 1; ++i){
-            Snake.Segment segment = extendedOtherSegments.get(i);
-            if (segment.getX() == this.segments.get(this.segments.size() - 1).getX()
-                    && segment.getY() == this.segments.get(this.segments.size() - 1).getY()) {
-                return true;
+        if((this.segments.size() == 1) && (other.getSegments().size() == 1) && (this.removed != null) && (other.getRemoved() != null)){
+            // they went through each other when both heads ended up on the removed segment of the other snake
+            // if one of them is null one didnt move -> couldnt have gone through each other -> no edge case
+                if((otherHead.getX() == this.removed.getX()) && (otherHead.getY() == this.removed.getY()) 
+                && (myHead.getX() == other.getRemoved().getX()) && (myHead.getY() == other.getRemoved().getY())){
+                    return true;
+                }
+        }else{
+            // check if head collides with any segment from the other snake
+            for(int i = 0; i < other.getSegments().size(); ++i){
+                Snake.Segment segment = this.segments.get(i);
+                if((myHead.getX() == segment.getX()) && (myHead.getY() == segment.getY())){
+                    return true;
+                }
             }
         }
         return false;
