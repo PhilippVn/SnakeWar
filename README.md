@@ -4,13 +4,15 @@ Single and two-player multiplayer snake game featuring an own docker-virtualized
 # Requirements
 - Docker
 
+# Controls:
+w,a,s,d for up, left, down and right
+
 # Features
 - Snake Game
 - Webserver
 
 # To Come:
 - Database support
-- Public hosted web- and gameserver
 
 # How to install and run?
 - clone the repo
@@ -43,3 +45,6 @@ Single and two-player multiplayer snake game featuring an own docker-virtualized
 The shell scripts are missing the execute flag. Add it with `chmod +x *.sh` in `webserver` and `snake/server`
 ## I get a gradlew permission error when running the game server container
 Same as with the shell scripts: Execute `chmod +x gradlew` in `snake/server`
+
+# Public Gameserver
+Public hosted Game instance for single and multiplayer can be found [here](http://212.227.179.145:8000/)
