@@ -41,6 +41,8 @@ function establishRoomConnection() {
         gameserver = new WebSocket(gameserverIp + '/snake');
     }
 
+    drawWaitingForPlayers();
+
     const roomCode = document.getElementById("roomNumberInput").value;
     room = new WebSocket(gameserverIp + "/snake/room/" + roomCode);
     room.onopen = function (event) {
@@ -80,18 +82,12 @@ function establishRoomConnection() {
                     msg = ServerGameOverMessage.fromJson(event.data);
                     if(msg.winnerExists){
                         if(msg.winnerName == clientName){
-                            ctx.fillStyle = "green";
-                            ctx.font = 'italic 125pt Calibri';
-                            ctx.fillText("YOU WON!", 25, 125);
+                            drawWin();
                         }else{
-                            ctx.fillStyle = "red";
-                            ctx.font = 'italic 125pt Calibri';
-                            ctx.fillText("YOU LOST!", 25, 125);
+                            drawLoss();
                         }
                     }else{
-                        ctx.fillStyle = "grey";
-                        ctx.font = 'italic 125pt Calibri';
-                        ctx.fillText("ITS A TIE!", 25, 125);
+                        drawTie();
                     }
                     connectedToGameServer = false;
                     connectedToRoom = false;
@@ -157,6 +153,8 @@ function establishGameServerConnection() {
     if (connectedToGameServer)
         return;
 
+    drawMultiplayerMode();
+
     gameserver = new WebSocket(gameserverIp + '/snake');
 
     gameserver.onopen = function (event) {
@@ -203,6 +201,59 @@ function logServerMessage(msg) {
     console.log("Server Message:")
     console.log(msg);
 }
+
+function drawMultiplayerMode(ctx){
+    ctx.clearRect(0,0,1000,700);
+    ctx.fillStyle = "green";
+    ctx.font = 'italic 70pt Calibri';
+    ctx.fillText("Snake Multiplayer",0,100);
+  }
+
+  function drawWaitingForPlayers(){
+    drawMultiplayerMode();
+    ctx.fillStyle = "grey";
+    ctx.font = 'italic 35pt Calibri';
+    ctx.fillText("Waiting for players...", 0,200);
+  }
+
+  function drawWin(){
+    ctx.clearRect(0,0,1000,700);
+    ctx.fillStyle = "green";
+    ctx.font = 'italic 100pt Calibri';
+    ctx.fillText("YOU WON!", 200, 300);
+    ctx.font = 'italic 50pt Calibri';
+    if(playerNumber == 1){
+        ctx.fillText("Final Score: " + player1Snake.getLength, 200, 400);
+    }else{
+        ctx.fillText("Final Score: " + player2Snake.getLength, 200, 400);
+    }
+    
+  }
+  function drawLoss(){
+    ctx.clearRect(0,0,1000,700);
+    ctx.fillStyle = "red";
+    ctx.font = 'italic 100pt Calibri';
+    ctx.fillText("YOU LOST!", 200, 300);
+    ctx.font = 'italic 50pt Calibri';
+    if(playerNumber == 1){
+        ctx.fillText("Final Score: " + player1Snake.getLength, 200, 400);
+    }else{
+        ctx.fillText("Final Score: " + player2Snake.getLength, 200, 400);
+    }
+  }
+
+  function drawTie(){
+    ctx.fillStyle = "grey";
+    ctx.font = 'italic 100pt Calibri';
+    ctx.fillText("ITS A TIE!", 200, 300);
+    ctx.font = 'italic 50pt Calibri';
+    ctx.fillStyle = "black"
+    if(playerNumber == 1){
+        ctx.fillText("Final Score: " + player1Snake.getLength, 200, 400);
+    }else{
+        ctx.fillText("Final Score: " + player2Snake.getLength, 200, 400);
+    }
+  }
 
 // multiplayer
 const gameserverIp = "";
