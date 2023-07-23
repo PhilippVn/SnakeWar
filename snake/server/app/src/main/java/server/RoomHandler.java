@@ -140,9 +140,28 @@ public class RoomHandler implements Runnable {
                     int inputPlayer1 = ci1.getInput();
                     int inputPlayer2 = ci2.getInput();
 
-                    // collision detection before moving
+                    // moving
+
+                    Snake.Segment snake1Head = player1.getSnake().getSegments().get(player1.getSnake().getSegments().size()-1);
+                    Snake.Segment snake2Head = player2.getSnake().getSegments().get(player2.getSnake().getSegments().size()-1);
+
+                    int[] newPos1 = handleUserinput(snake1Head.getX(),snake1Head.getY(),inputPlayer1);
+                    int[] newPos2 = handleUserinput(snake2Head.getX(),snake2Head.getY(),inputPlayer2);
+
+                    player1.getSnake().move(newPos1[0],newPos1[1]);
+                    player2.getSnake().move(newPos2[0],newPos2[1]);
+
+                    // collision detection
                     boolean snake1AteApple = this.apple.detectCollision(player1.getSnake());
                     boolean snake2AteApple = this.apple.detectCollision(player2.getSnake());
+
+                    if(snake1AteApple){
+                        player1.getSnake().addRemoved();
+                    }
+
+                    if(snake2AteApple){
+                        player2.getSnake().addRemoved();
+                    }
 
                     boolean snake1HitSnake2 = player1.getSnake().detectCollision(player2.getSnake());
                     boolean snake2HitSnake1 = player2.getSnake().detectCollision(player1.getSnake());
@@ -178,16 +197,7 @@ public class RoomHandler implements Runnable {
                     }
 
 
-                    // moving
-
-                    Snake.Segment snake1Head = player1.getSnake().getSegments().get(player1.getSnake().getSegments().size()-1);
-                    Snake.Segment snake2Head = player2.getSnake().getSegments().get(player2.getSnake().getSegments().size()-1);
-
-                    int[] newPos1 = handleUserinput(snake1Head.getX(),snake1Head.getY(),inputPlayer1);
-                    int[] newPos2 = handleUserinput(snake2Head.getX(),snake2Head.getY(),inputPlayer2);
-
-                    player1.getSnake().move(newPos1[0],newPos1[1],snake1AteApple);
-                    player2.getSnake().move(newPos2[0],newPos2[1],snake2AteApple);
+                    
 
                     // new apple?
 

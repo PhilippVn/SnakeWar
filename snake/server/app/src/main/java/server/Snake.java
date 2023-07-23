@@ -8,6 +8,7 @@ import java.util.Random;
 public class Snake {
     private int length;
     private List<Segment> segments;
+    private Snake.Segment removed;
 
     public Snake(int x, int y) {
         this.length = 1;
@@ -31,8 +32,8 @@ public class Snake {
         this.segments = segments;
     }
 
-    public void move(int x, int y, boolean appleEaten) {
-        Segment removed = this.segments.remove(0);
+    public void move(int x, int y) {
+        this.removed = this.segments.remove(0);
         length = this.segments.size();
 
         Segment newHead = new Segment(x, y, true);
@@ -40,13 +41,13 @@ public class Snake {
             this.segments.get(length - 1).setHead(false);
         this.segments.add(newHead);
         this.length = this.segments.size();
+    }
 
-        if (appleEaten) {
-            // re-add tail if apple is eaten
-            removed.setHead(false);
-            this.segments.add(0, removed);
-            this.length = this.segments.size();
-        }
+    // re-add removed tail if apple is eaten
+    public void addRemoved(){
+        this.removed.setHead(false);
+        this.segments.add(0,  this.removed);
+        this.length = this.segments.size();
     }
 
     /**
