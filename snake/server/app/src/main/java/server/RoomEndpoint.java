@@ -137,7 +137,7 @@ public class RoomEndpoint {
    }
 
    private class RoomNumberGenerator {
-      private static final String ROOM_NUMBER_CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+      private static final String ROOM_NUMBER_CHARACTERS = "123456789abcdefghijklmnopqrstuvwxyz";
       private static final int ROOM_NUMBER_LENGTH = 4;
 
       public static String generateRoomNumber() {
