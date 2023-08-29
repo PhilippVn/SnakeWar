@@ -50,6 +50,7 @@ function setupSinglePlayerGame() {
     x = canvas.getBoundingClientRect().width / 2 - 25;
     y = canvas.getBoundingClientRect().height / 2 - 25;
 
+    playerNumber = 1;
     player1Snake = new Snake();
     player1Snake.addSegment(x, y, true);
 
@@ -173,11 +174,11 @@ function establishRoomConnection() {
         console.log('WebSocket closed with code:', event.code);
         console.log('Close reason:', event.reason);
         // check for abnormal room close
-        if(event.reason == "Room is full"){
+        if (event.reason == "Room is full") {
             alert("Failed to join room: Room is full");
         }
 
-        if(event.reason == "Invalid Room id"){
+        if (event.reason == "Invalid Room id") {
             alert("Failed to join room: Invalid Room Id");
         }
     };
@@ -465,16 +466,57 @@ document.addEventListener('keydown', (event) => {
         ascii = name.charCodeAt(0); // get ascii code of key
     }
 
-    if (typeof ascii == "number" && ascii < 128) {
-        //console.log(`${name} equals ASCII code ${ascii}`);
-        if (name == 'w' || name == 'W' || name == 'd' || name == 'D' || name == 's' || name == 'S' || name == 'a' || name == 'A') {
-            keyPressed = true;
-            key = name;
-            asciiKeyCode = ascii;
+    // unkown input -> ignore
+    if (!(typeof ascii == "number") || !(ascii < 128)) {
+        return;
+    }
+
+    // check if player would go into itsself -> if yes ignore input
+    let s;
+    if (singlePlayer) {
+        s = player1Snake;
+    } else {
+        if (playerNumber === 1) {
+            s = player1Snake;
+        } else {
+            s = player2Snake;
         }
     }
-    else {
-        //console.log( name + " is not in the ASCII character set");
+    if(s.length > 1){
+        switch (Snake.getRelativeSegmentLocation(s.getSegments[s.getSegments.length - 2], s.getSegments[s.getSegments.length - 1])) {
+            case "south": {
+                if (name == 's' || name == 'S'){
+                    return;
+                }
+                    break;
+            }
+            case "west": {
+                if (name == 'a' || name == 'A'){
+                    return;
+                }
+                break;
+            }
+            case "east": {
+                if (name == 'd' || name == 'D'){
+                    return;
+                }
+                break;
+            }
+            case "north": {
+                if (name == 'w' || name == 'W'){
+                    return;
+                }
+                break;
+            }
+            default:
+        }
+    }
+
+    //console.log(`${name} equals ASCII code ${ascii}`);
+    if (name == 'w' || name == 'W' || name == 'd' || name == 'D' || name == 's' || name == 'S' || name == 'a' || name == 'A') {
+        keyPressed = true;
+        key = name;
+        asciiKeyCode = ascii;
     }
 
 }, false);

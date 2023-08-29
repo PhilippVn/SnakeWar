@@ -92,6 +92,26 @@ class Snake {
             }
         }
     }
+
+    static getRelativeSegmentLocation(from,to){
+        if(from.getX == to.getX && from.getY > to.getY){
+            return "south";
+        }
+
+        if(from.getX < to.getX && from.getY == to.getY){
+            return "west";
+        }
+
+        if(from.getX == to.getX && from.getY < to.getY){
+            return "north";
+        }
+
+        if(from.getX > to.getX && from.getY == to.getY){
+            return "east";
+        }
+        console.error(`ERROR: Invalid relative segment location (FROM:x=${from.x} y=${from.y},TO:x=${to.x} y=${to.y})`);
+        return "";
+    }
 }
 
 class SnakeSegment {
