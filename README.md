@@ -45,6 +45,11 @@ w,a,s,d for up, left, down and right
 The shell scripts are missing the execute flag. Add it with `chmod +x *.sh` in `webserver` and `snake/server`
 ## I get a gradlew permission error when running the game server container
 Same as with the shell scripts: Execute `chmod +x gradlew` in `snake/server`
+## The Webserver doesnt send me updated files
+Typical caching problem. Solution:
+1. Clear Browser Cache
+2. Only if 1 didnt work: Clear Docker Cache
+`docker system prune -a`
 
 # Public Gameserver
 Public hosted Game instance for single and multiplayer can be found [here](http://212.227.179.145:8000/)
