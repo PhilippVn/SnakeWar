@@ -112,10 +112,10 @@ public class RoomHandler implements Runnable {
                 case CLIENT_GAME_STOP_REQUEST:
                     break;
                 case CLIENT_INPUT_MESSAGE:
-                    while (!roomEndpoint1.hasClientMessage() || !roomEndpoint2.hasClientMessage()) {
+                    while (!roomEndpoint1.hasClientMessage() || !roomEndpoint2.hasClientMessage()) { //TODO dont wait on user input -> use old messages if possible
                         try {
                             Thread.sleep(100);
-                            System.out.println("Thread sleeps for user input...");
+                            //System.out.println("Thread sleeps for user input...");
                         } catch (InterruptedException ignored) {
                         }
                     }
