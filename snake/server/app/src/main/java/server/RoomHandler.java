@@ -361,7 +361,7 @@ public class RoomHandler implements Runnable {
             case 115: ret = new int[]{x,y+GameBoard.GAME_STEPSIZE};break;// s
             case 68:
             case 100: ret = new int[]{x+GameBoard.GAME_STEPSIZE,y};break;// d
-            default: System.err.println("Invalid Client Input:" + (char)input); ret = new int[]{x,y};break; // dont move
+            default: ret = new int[]{x,y};break; // dont move
         }
 
         // implement wall teleportation
